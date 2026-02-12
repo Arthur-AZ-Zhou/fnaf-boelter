@@ -11,7 +11,7 @@ export const CONFIG = {
 
     // Light colors
     OFF: 0x000000,
-    ON: 0xAAAAAA,
+    ON: 0xFFDDAA,
 
     // Material Colors
     ROOM_MATERIAL: 0x555048,
