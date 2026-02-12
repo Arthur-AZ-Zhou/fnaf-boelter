@@ -1,7 +1,7 @@
 import './style.css';
 import * as THREE from 'three';
 import { scene, camera, renderer } from './scene';
-import { leftDoor, rightDoor } from './office';
+import { leftDoor, rightDoor, leftSecurityDoor, rightSecurityDoor } from './office';
 import './controls';
 import { GameState } from './state';
 import { CONFIG } from './config';
@@ -31,6 +31,20 @@ function getFlickerColor(): THREE.Color {
 }
 
 /**
+ * Helper to smooth move doors
+ * @param door: door mesh to move
+ * @param isClosed: whether the door should be closed or open
+ */
+function updateDoorPosition(door: THREE.Mesh, isClosed: boolean) {
+  const closedY = -1;
+  const openY = 7;
+  const targetY = isClosed ? closedY : openY;
+  
+  // Lerp to move 10% of the way to the target per frame
+  door.position.y += (targetY - door.position.y) * 0.1;
+}
+
+/**
  * MAIN GAME LOOP, handles rendering and office camera movement
  */
 function animate() {
@@ -54,6 +68,9 @@ function animate() {
   } else {
     rightMat.color.setHex(CONFIG.COLORS.OFF);
   }
+
+  updateDoorPosition(leftSecurityDoor, GameState.leftDoorClosed);
+  updateDoorPosition(rightSecurityDoor, GameState.rightDoorClosed);
 
   renderer.render(scene, camera);
 }

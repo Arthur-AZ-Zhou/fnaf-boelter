@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { camera } from './scene';
-import { interactables, leftButton, rightButton } from './office';
+import { interactables, leftLightButton, rightLightButton, leftDoorButton, rightDoorButton } from './office';
 import { GameState } from './state';
 import { CONFIG } from './config';
 
@@ -8,10 +8,12 @@ import { CONFIG } from './config';
  * Helper function to update button color based on state (green for ON, grey for OFF)
  * @param mesh: button mesh to update
  * @param isOn: whether the button is active or not
+ * @param colorOn: color when active
+ * @param colorOff: color when inactive
  */
-function updateButtonVisuals(mesh: THREE.Mesh, isOn: boolean) {
+function updateButtonVisuals(mesh: THREE.Mesh, isOn: boolean, colorOn: number, colorOff: number): void {
   const mat = mesh.material as THREE.MeshBasicMaterial;
-  mat.color.setHex(isOn ? CONFIG.COLORS.BUTTON_ON : CONFIG.COLORS.BUTTON_OFF);
+  mat.color.setHex(isOn ? colorOn : colorOff);
 }
 
 /**
@@ -34,11 +36,20 @@ window.addEventListener('click', (event) => {
 
     if (btnId === 'left_light') {
       GameState.leftLightOn = !GameState.leftLightOn;
-      updateButtonVisuals(leftButton, GameState.leftLightOn);
+      updateButtonVisuals(leftLightButton, GameState.leftLightOn, CONFIG.COLORS.BUTTON_ON, CONFIG.COLORS.BUTTON_OFF);
 
     } else if (btnId === 'right_light') {
       GameState.rightLightOn = !GameState.rightLightOn;
-      updateButtonVisuals(rightButton, GameState.rightLightOn);
+      updateButtonVisuals(rightLightButton, GameState.rightLightOn, CONFIG.COLORS.BUTTON_ON, CONFIG.COLORS.BUTTON_OFF);
+      
+    } else if (btnId === 'left_door') {
+      GameState.leftDoorClosed = !GameState.leftDoorClosed;
+      updateButtonVisuals(leftDoorButton, GameState.leftDoorClosed, CONFIG.COLORS.DOOR_BUTTON_ON, CONFIG.COLORS.BUTTON_OFF);
+
+    } else if (btnId === 'right_door') {
+      GameState.rightDoorClosed = !GameState.rightDoorClosed;
+      updateButtonVisuals(rightDoorButton, GameState.rightDoorClosed, CONFIG.COLORS.DOOR_BUTTON_ON, CONFIG.COLORS.BUTTON_OFF);
+      
     }
   }
 });
