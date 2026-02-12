@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { scene } from './scene';
-import { CONFIG } from './config';
+import { scene } from '../core/scene';
+import { CONFIG } from '../core/config';
 
 
 export const interactables: THREE.Object3D[] = []; // Array for raycasting interactable objects (shoot a ray from 2D mouse to 3D button)

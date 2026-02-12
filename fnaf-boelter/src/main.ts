@@ -1,10 +1,10 @@
 import './style.css';
 import * as THREE from 'three';
-import { scene, camera, renderer } from './scene';
-import { leftDoor, rightDoor, leftSecurityDoor, rightSecurityDoor } from './office';
-import './controls';
-import { GameState } from './state';
-import { CONFIG } from './config';
+import { scene, camera, renderer } from './core/scene';
+import { leftDoor, rightDoor, leftSecurityDoor, rightSecurityDoor } from './world/office';
+import './systems/controls';
+import { GameState } from './core/state';
+import { CONFIG } from './core/config';
 
 
 const camTarget = new THREE.Vector3(0, 0, -10);

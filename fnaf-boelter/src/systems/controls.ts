@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { camera } from './scene';
-import { interactables, leftLightButton, rightLightButton, leftDoorButton, rightDoorButton } from './office';
-import { GameState } from './state';
-import { CONFIG } from './config';
+import { camera } from '../core/scene';
+import { interactables, leftLightButton, rightLightButton, leftDoorButton, rightDoorButton } from '../world/office';
+import { GameState } from '../core/state';
+import { CONFIG } from '../core/config';
 
 /**
  * Helper function to update button color based on state (green for ON, grey for OFF)
