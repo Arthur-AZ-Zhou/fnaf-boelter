@@ -11,10 +11,11 @@ export const CONFIG = {
 
     // Light colors
     OFF: 0x000000,
-    ON: 0xFFDDAA,
+    ON: 0xEEE8D5,
+    LIGHT_ON: 0xEEE8D5,
 
     // Material Colors
-    ROOM_MATERIAL: 0x555048,
-    CLOSED_DOOR: 0x222222,
+    ROOM_MATERIAL: 0x2A2825,
+    CLOSED_DOOR: 0x1A1C1E,
   }
 };

@@ -13,6 +13,7 @@ canvas {
   position: absolute;
   bottom: 0;
   left: 0;
+  z-index: 10; /*Above canvas so we can click button*/
   width: 100%;
   height: 100px; /*button area space*/
   
@@ -47,4 +48,45 @@ canvas {
   background-color: rgba(255, 255, 255, 0.25);
   border-color: white;
   transform: scale(1.05); /*grow when hovered*/
+}
+
+#monitor-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  z-index: 5;
+  
+  /*Flip animation*/
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  
+  /*Borders to look like screen*/
+  border: 20px solid #111;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+#static-canvas {
+  width: 100%;
+  height: 100%;
+  opacity: 0.15; /*Static opacity*/
+  display: block;
+}
+
+/*Scanline effect for retro theme*/
+#monitor-layer::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 2;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
 }

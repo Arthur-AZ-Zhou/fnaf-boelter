@@ -5,6 +5,7 @@ import { leftDoor, rightDoor, leftSecurityDoor, rightSecurityDoor } from './worl
 import './systems/controls';
 import { GameState } from './core/state';
 import { CONFIG } from './core/config';
+import { updateCameraSystem } from './systems/cameraSystem';
 
 
 const camTarget = new THREE.Vector3(0, 0, -10);
@@ -20,7 +21,7 @@ document.addEventListener('mousemove', (event) => {
  * @returns base color for flicker
  */
 function getFlickerColor(): THREE.Color {
-  const baseColor = new THREE.Color(CONFIG.COLORS.ON);
+  const baseColor = new THREE.Color(CONFIG.COLORS.LIGHT_ON);
   const noise = (Math.random() - 0.5) * CONFIG.FLICKER_INTENSITY;
 
   baseColor.r += noise; 
@@ -35,7 +36,7 @@ function getFlickerColor(): THREE.Color {
  * @param door: door mesh to move
  * @param isClosed: whether the door should be closed or open
  */
-function updateDoorPosition(door: THREE.Mesh, isClosed: boolean) {
+function updateDoorPosition(door: THREE.Mesh, isClosed: boolean): void {
   const closedY = -1;
   const openY = 7;
   const targetY = isClosed ? closedY : openY;
@@ -47,13 +48,17 @@ function updateDoorPosition(door: THREE.Mesh, isClosed: boolean) {
 /**
  * MAIN GAME LOOP, handles rendering and office camera movement
  */
-function animate() {
+function animate(): void {
   requestAnimationFrame(animate);
 
   // Camera Movements
   camTarget.x += (mouseX * CONFIG.SENSITIVITY - camTarget.x) * CONFIG.CAMERA_SPEED;
   camera.lookAt(camTarget);
 
+  // Update Cameras
+  updateCameraSystem(); // Handle monitor animation and static effect
+
+  // Rest of Office Animations (light flicker and door movement)
   const leftMat = leftDoor.material as THREE.MeshBasicMaterial;
   const rightMat = rightDoor.material as THREE.MeshBasicMaterial;
 
