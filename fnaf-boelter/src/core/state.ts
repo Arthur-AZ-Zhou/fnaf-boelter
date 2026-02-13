@@ -4,4 +4,5 @@ export const GameState = {
   rightLightOn: false,
   leftDoorClosed: false,
   rightDoorClosed: false,
+  currentCamera: "CAM_01",
 };
