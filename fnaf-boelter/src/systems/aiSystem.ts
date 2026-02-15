@@ -29,8 +29,19 @@ function updateCarey(): void {
 
   // Roll a d20
   const roll = Math.floor(Math.random() * 20) + 1;
+  const currentIndex = CAREY_PATH.indexOf(GameState.careyLocation);
   
-  if (roll <= GameState.careyDifficulty) {
+  if (roll === 1) {
+    if (currentIndex > 0) { 
+      GameState.careyLocation = CAREY_PATH[currentIndex - 1];
+      console.log(`Carey retreated to: ${GameState.careyLocation}`);
+      
+      if (GameState.isMonitorUp) {
+        updateUI();
+      }
+    }
+
+  } else if (roll <= GameState.careyDifficulty) {
     const currentIndex = CAREY_PATH.indexOf(GameState.careyLocation);
     
     // Move to the next room in the path
@@ -59,8 +70,18 @@ function updateJoe(): void {
   if (GameState.joeLocation === 'RIGHT_DOOR') return;
 
   const roll = Math.floor(Math.random() * 20) + 1;
+  const currentIndex = JOE_PATH.indexOf(GameState.joeLocation);
   
-  if (roll <= GameState.joeDifficulty) {
+  if (roll === 1) {
+    if (currentIndex > 0) {
+      GameState.joeLocation = JOE_PATH[currentIndex - 1];
+      console.log(`Joe retreated to: ${GameState.joeLocation}`);
+      
+      if (GameState.isMonitorUp) {
+        updateUI();
+      }
+    }
+  } else if (roll <= GameState.joeDifficulty) {
     const currentIndex = JOE_PATH.indexOf(GameState.joeLocation);
     
     if (currentIndex < JOE_PATH.length - 1) {
@@ -89,10 +110,12 @@ function triggerDoorAttack(animatronic: 'Carey' | 'Joe'): void {
     if (GameState.isGameOver) return; // Prevent double jumpscares if the other one got you first
 
     if (animatronic === 'Carey') {
-      if (GameState.leftDoorClosed) {
-        // Blocked! Send back to CAM_07
-        console.log("Carey was blocked! Resetting to CAM_07.");
-        GameState.careyLocation = 'CAM_07';
+      if (GameState.leftDoorClosed) { // Successful block
+        const resetLocations = ['CAM_10', 'CAM_07', 'CAM_02', 'CAM_01', 'CAM_04'];
+        const randomLoc = resetLocations[Math.floor(Math.random() * resetLocations.length)];
+
+        GameState.careyLocation = randomLoc;
+        console.log(`Carey was blocked! Resetting to ${randomLoc}.`);
 
       } else {
         // Player failed to close door
@@ -103,9 +126,11 @@ function triggerDoorAttack(animatronic: 'Carey' | 'Joe'): void {
     
     else if (animatronic === 'Joe') {
       if (GameState.rightDoorClosed) {
-        // Blocked! Send back to CAM_08
-        console.log("Joe was blocked! Resetting to CAM_08.");
-        GameState.joeLocation = 'CAM_08';
+        const resetLocations = ['CAM_10', 'CAM_08', 'CAM_03', 'CAM_01', 'CAM_05'];
+        const randomLoc = resetLocations[Math.floor(Math.random() * resetLocations.length)];
+        
+        GameState.joeLocation = randomLoc;
+        console.log(`Joe was blocked! Resetting to ${randomLoc}.`);
 
       } else {
         console.log("JUMPSCARE! Joe got you.");
