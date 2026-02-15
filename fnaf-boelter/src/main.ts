@@ -6,6 +6,7 @@ import './systems/controls';
 import { GameState } from './core/state';
 import { CONFIG } from './core/config';
 import { updateCameraSystem } from './systems/cameraSystem';
+import { initAISystem } from './systems/aiSystem';
 
 
 const camTarget = new THREE.Vector3(0, 0, -10);
@@ -80,5 +81,7 @@ function animate(): void {
   renderer.render(scene, camera);
 }
 
+
+initAISystem(); // Start animatronic movement logic
 animate();
 

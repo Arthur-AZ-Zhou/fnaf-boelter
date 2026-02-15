@@ -75,7 +75,7 @@ canvas {
   height: 100%;
   opacity: 0.15; /*Static opacity*/
   display: block;
-  z-index: 2;
+  z-index: 5;
   pointer-events: none;
 }
 
@@ -202,3 +202,14 @@ canvas {
   z-index: 1;
   filter: brightness(0.5) contrast(1.2);
 }
+
+.animatronic-sprite {
+  position: absolute;
+  height: auto;
+  z-index: 2; /*Sits on top of background*/
+  display: none; /*Hidden by default, JS turns this on.*/
+  pointer-events: none;
+
+  filter: brightness(0.6) contrast(1.5) drop-shadow(0 0 15px black); /*Make darker and creepier*/
+}
+

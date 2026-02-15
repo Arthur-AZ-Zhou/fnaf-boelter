@@ -25,9 +25,6 @@ camLabel.id = 'camera-label';
 mapContainer.id = 'camera-map';
 
 document.body.appendChild(monitorContainer);
-monitorContainer.appendChild(staticCanvas);
-monitorContainer.appendChild(camLabel);
-monitorContainer.appendChild(mapContainer);
 
 const ctx = staticCanvas.getContext('2d')!;
 const camButtons: HTMLButtonElement[] = [];
@@ -115,6 +112,18 @@ const cameraDisplay = document.createElement('img');
 cameraDisplay.id = 'camera-view-img';
 monitorContainer.appendChild(cameraDisplay);
 
+const careySprite = document.createElement('img');
+careySprite.className = 'animatronic-sprite';
+monitorContainer.appendChild(careySprite);
+
+const joeSprite = document.createElement('img');
+joeSprite.className = 'animatronic-sprite';
+monitorContainer.appendChild(joeSprite);
+
+monitorContainer.appendChild(staticCanvas);
+monitorContainer.appendChild(camLabel);
+monitorContainer.appendChild(mapContainer);
+
 const cameraImages: Record<string, string> = {
   'CAM_01': '/rooms/main_hall.jpg',
   'CAM_02': '/rooms/cs_lab.jpg',
@@ -128,16 +137,101 @@ const cameraImages: Record<string, string> = {
   'CAM_10': '/rooms/outside.jpg',
 };
 
+type SpriteConfig = { width: string, top: string, left: string };
+
+// Map out coords where Carey and Joe stand in each cam
+const spritePositions: Record<string, { carey?: SpriteConfig, joe?: SpriteConfig }> = {
+  // SHARED ROOMS =====
+  'CAM_10': { // OUTSIDE
+    carey: { width: '50%', top: '20%', left: '6%' },
+    joe:   { width: '50%', top: '-1.5%', left: '56%' },
+  },
+  'CAM_01': { // MAIN HALL
+    carey: { width: '9%', top: '7.5%', left: '80%' },
+    joe:   { width: '15%', top: '12%', left: '30%' },
+  },
+
+  // CAREY PATH =====
+  'CAM_07': { // ELEVATORS
+    carey: { width: '70%', top: '45%', left: '0%' },
+  },
+  'CAM_02': { // CS LAB
+    carey: { width: '50%', top: '60%', left: '20%' },
+  },
+  'CAM_04': { // WEST CORRIDOR
+    carey: { width: '100%', top: '10%', left: '-15%' },
+  },
+  'CAM_06': { // VENDING MACHINES
+    carey: { width: '100%', top: '10%', left: '-25%' },
+  },
+
+  // JOE PATH =====
+  'CAM_08': { // SERVER ROOM
+    joe: { width: '80%', top: '40%', left: '40%' },
+  },
+  'CAM_03': { // SUPPLY CLOSET
+    joe: { width: '55%', top: '30%', left: '20%' },
+  },
+  'CAM_05': { // EAST CORRIDOR
+    joe: { width: '20%', top: '35%', left: '39%' }, 
+  },
+  'CAM_09': { // RESTROOMS
+    joe: { width: '80%', top: '20%', left: '40%' },
+  }
+};
+
 /**
- * Updates the text label and active button highlights
+ * Function to apply custom coordinates
+ * @param sprite: the HTMLImageElement of the animatronic sprite to position
+ * @param config: the SpriteConfig containing width, top, and left values
  */
-function updateUI(): void {
+function applySpriteStyle(sprite: HTMLImageElement, config?: SpriteConfig): void {
+  if (config) {
+    sprite.style.width = config.width;
+    sprite.style.top = config.top;
+    sprite.style.left = config.left;
+  } else { // random default values if forgot to set for a cam
+    sprite.style.width = '30%';
+    sprite.style.top = '35%';
+    sprite.style.left = '35%';
+  }
+}
+
+/**
+ * Updates the text label, active buttons, background image, AND DYNAMIC SPRITES
+ */
+export function updateUI(): void {
   const activeCam = cameras.find(c => c.id === GameState.currentCamera);
   camLabel.innerText = activeCam ? activeCam.label : '';
 
   const imagePath = cameraImages[GameState.currentCamera];
   if (imagePath) {
     cameraDisplay.src = imagePath;
+
+    // Static Glitch Effect (hides image loading pop)
+    staticCanvas.style.opacity = "1.0";
+    setTimeout(() => { staticCanvas.style.opacity = "0.15" }, 80);
+  }
+
+  const formattedCamId = GameState.currentCamera.replace('_', '').toLowerCase();
+  const currentPositions = spritePositions[GameState.currentCamera];
+
+  if (GameState.careyLocation === GameState.currentCamera) {
+    careySprite.src = `/sprites/carey_${formattedCamId}.png`;
+    applySpriteStyle(careySprite, currentPositions?.carey);
+    careySprite.style.display = 'block';
+
+  } else {
+    careySprite.style.display = 'none';
+  }
+
+  if (GameState.joeLocation === GameState.currentCamera) {
+    joeSprite.src = `/sprites/joe_${formattedCamId}.png`;
+    applySpriteStyle(joeSprite, currentPositions?.joe);
+    joeSprite.style.display = 'block';
+
+  } else {
+    joeSprite.style.display = 'none';
   }
 
   camButtons.forEach(btn => {
