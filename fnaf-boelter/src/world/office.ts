@@ -20,8 +20,8 @@ export const doorMaterials = {
 };
 
 export const doorSprites = {
-  left: new THREE.Mesh(new THREE.PlaneGeometry(4, 8), doorMaterials.leftSprite),
-  right: new THREE.Mesh(new THREE.PlaneGeometry(4, 8), doorMaterials.rightSprite)
+  left: new THREE.Mesh(new THREE.PlaneGeometry(7, 11), doorMaterials.leftSprite),
+  right: new THREE.Mesh(new THREE.PlaneGeometry(7, 11), doorMaterials.rightSprite)
 };
 
 /**

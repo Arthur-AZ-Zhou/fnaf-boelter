@@ -8,8 +8,8 @@ export const GameState = {
 
   careyLocation: 'CAM_10',
   joeLocation: 'CAM_10',
-  careyDifficulty: 5, // 1-20 scale, placeholder 5 for now
-  joeDifficulty: 5,
+  careyDifficulty: 10, // 1-20 scale
+  joeDifficulty: 10,
 
   isGameOver: false,
 };

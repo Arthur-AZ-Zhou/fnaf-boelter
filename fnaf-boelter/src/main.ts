@@ -61,7 +61,9 @@ function animate(): void {
 
   if (GameState.leftLightOn) {
     const flicker = getFlickerColor();
-    doorMaterials.leftBg.color = flicker;
+    const darkFlicker = flicker.clone().multiplyScalar(0.4);
+
+    doorMaterials.leftBg.color = darkFlicker;
     doorMaterials.leftSprite.color = flicker;
     
     // Only shoe Carey if he is at door
@@ -74,7 +76,9 @@ function animate(): void {
 
   if (GameState.rightLightOn) {
     const flicker = getFlickerColor();
-    doorMaterials.rightBg.color = flicker;
+    const darkFlicker = flicker.clone().multiplyScalar(0.4);
+
+    doorMaterials.rightBg.color = darkFlicker;
     doorMaterials.rightSprite.color = flicker;
     
     doorSprites.right.visible = (GameState.joeLocation === 'RIGHT_DOOR');
