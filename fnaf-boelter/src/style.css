@@ -289,3 +289,57 @@ canvas {
   letter-spacing: 5px;
   text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
 }
+
+#jumpscare-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9000;
+  display: none; 
+  pointer-events: none;
+  background-color: black;
+  overflow: hidden;
+}
+
+.jumpscare-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  animation: jumpscare-shake 0.05s infinite;
+  filter: contrast(2.0) brightness(1.5);
+}
+
+@keyframes jumpscare-shake {
+  0% { transform: translate(15px, 15px) scale(1.3); filter: invert(0) drop-shadow(0 0 50px white); }
+  25% { transform: translate(-15px, -10px) scale(1.2); filter: invert(0.2); }
+  50% { transform: translate(10px, -15px) scale(1.4); filter: invert(0.8); background-color: white;} 
+  75% { transform: translate(-10px, 15px) scale(1.2); filter: invert(0); }
+  100% { transform: translate(15px, -10px) scale(1.3); filter: invert(0.5); }
+}
+
+#game-over-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  z-index: 9999;
+  display: none; 
+  justify-content: center;
+  align-items: center;
+  opacity: 0; 
+  transition: opacity 3s ease-in-out; 
+}
+
+.game-over-text {
+  color: #ff0000;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 100px;
+  font-weight: bold;
+  letter-spacing: 5px;
+  text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+}

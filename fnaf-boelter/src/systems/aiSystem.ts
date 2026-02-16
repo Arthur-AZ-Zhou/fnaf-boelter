@@ -2,6 +2,18 @@ import { GameState } from '../core/state';
 import { CONFIG } from '../core/config';
 import { updateUI } from './cameraSystem';
 
+// Jumpscare and Game Over Screens
+const jumpscareScreen = document.createElement('div');
+jumpscareScreen.id = 'jumpscare-screen';
+const jumpscareImg = document.createElement('img');
+jumpscareImg.className = 'jumpscare-img';
+jumpscareScreen.appendChild(jumpscareImg);
+document.body.appendChild(jumpscareScreen);
+
+const gameOverScreen = document.createElement('div');
+gameOverScreen.id = 'game-over-screen';
+gameOverScreen.innerHTML = `<div class="game-over-text">GAME OVER</div>`;
+document.body.appendChild(gameOverScreen);
 
 // Specific paths for each animatronic
 const CAREY_PATH = ['CAM_10', 'CAM_07', 'CAM_02', 'CAM_01', 'CAM_04', 'CAM_06', 'LEFT_DOOR'];
@@ -149,6 +161,23 @@ function executeJumpscare(animatronic: 'Carey' | 'Joe'): void {
   clearInterval(careyTimer);
   clearInterval(joeTimer);
   
-  //WIP, JUST ALERT FOR NOW
-  alert(`GAME OVER. Killed by ${animatronic}`); 
+  // hide standard UI
+  const timeUI = document.getElementById('time-container');
+  const powerUI = document.getElementById('power-container');
+  if (timeUI) timeUI.style.display = 'none';
+  if (powerUI) powerUI.style.display = 'none';
+
+  const formattedName = animatronic.toLowerCase();
+  jumpscareImg.src = `/sprites/${formattedName}_jumpscare.jpg`; 
+  jumpscareScreen.style.display = 'block';
+
+  // Wait 2 seconds, then hide jumpscare and show game over screen
+  setTimeout(() => {
+    gameOverScreen.style.display = 'flex';
+    
+    setTimeout(() => {
+      gameOverScreen.style.opacity = '1';
+    }, 50);
+
+  }, 2000);
 }
