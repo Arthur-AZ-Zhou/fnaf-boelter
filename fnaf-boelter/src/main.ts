@@ -1,7 +1,7 @@
 import './style.css';
 import * as THREE from 'three';
 import { scene, camera, renderer } from './core/scene';
-import { leftDoor, rightDoor, leftSecurityDoor, rightSecurityDoor } from './world/office';
+import { leftSecurityDoor, rightSecurityDoor, doorMaterials, doorSprites } from './world/office';
 import './systems/controls';
 import { GameState } from './core/state';
 import { CONFIG } from './core/config';
@@ -19,7 +19,7 @@ document.addEventListener('mousemove', (event) => {
 
 /**
  * Adds flickering effect to the office lights by randomly adjusting their color intensity
- * @returns base color for flicker
+ * @return: base color for flicker
  */
 function getFlickerColor(): THREE.Color {
   const baseColor = new THREE.Color(CONFIG.COLORS.LIGHT_ON);
@@ -59,20 +59,29 @@ function animate(): void {
   // Update Cameras
   updateCameraSystem(); // Handle monitor animation and static effect
 
-  // Rest of Office Animations (light flicker and door movement)
-  const leftMat = leftDoor.material as THREE.MeshBasicMaterial;
-  const rightMat = rightDoor.material as THREE.MeshBasicMaterial;
-
   if (GameState.leftLightOn) {
-    leftMat.color = getFlickerColor();
+    const flicker = getFlickerColor();
+    doorMaterials.leftBg.color = flicker;
+    doorMaterials.leftSprite.color = flicker;
+    
+    // Only shoe Carey if he is at door
+    doorSprites.left.visible = (GameState.careyLocation === 'LEFT_DOOR');
   } else {
-    leftMat.color.setHex(CONFIG.COLORS.OFF);
+    doorMaterials.leftBg.color.setHex(CONFIG.COLORS.OFF);
+    doorMaterials.leftSprite.color.setHex(CONFIG.COLORS.OFF);
+    doorSprites.left.visible = false;
   };
 
   if (GameState.rightLightOn) {
-    rightMat.color = getFlickerColor();
+    const flicker = getFlickerColor();
+    doorMaterials.rightBg.color = flicker;
+    doorMaterials.rightSprite.color = flicker;
+    
+    doorSprites.right.visible = (GameState.joeLocation === 'RIGHT_DOOR');
   } else {
-    rightMat.color.setHex(CONFIG.COLORS.OFF);
+    doorMaterials.rightBg.color.setHex(CONFIG.COLORS.OFF);
+    doorMaterials.rightSprite.color.setHex(CONFIG.COLORS.OFF);
+    doorSprites.right.visible = false;
   }
 
   updateDoorPosition(leftSecurityDoor, GameState.leftDoorClosed);
