@@ -24,7 +24,7 @@ const mouse = new THREE.Vector2();
 
 window.addEventListener('click', (event) => {
   // Don't allow interactions if power is out or game is over
-  if (GameState.isPowerOut || GameState.isGameOver) return;
+  if (GameState.isPowerOut || GameState.isGameOver || GameState.isMonitorUp) return;
 
   // Must convert mouse position to Normalized Device Coordinates (-1 to +1)
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
