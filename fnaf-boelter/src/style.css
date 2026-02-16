@@ -213,3 +213,40 @@ canvas {
   filter: brightness(0.6) contrast(1.5) drop-shadow(0 0 15px black); /*Make darker and creepier*/
 }
 
+#power-container {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  color: white;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 28px;
+  font-weight: bold;
+  text-shadow: 2px 2px black;
+  z-index: 50; /*Above monitor layer so you can see while on cams*/
+  pointer-events: none; /* Let clicks pass through */
+}
+
+#power-usage {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.usage-bar {
+  display: inline-block;
+  width: 15px;
+  height: 25px;
+  background-color: #00ff00;
+  margin-left: 8px;
+  box-shadow: 0 0 5px #00ff00;
+}
+
+.usage-bar.high {
+  background-color: #ffff00;
+  box-shadow: 0 0 5px #ffff00;
+}
+
+.usage-bar.max {
+  background-color: #ff0000;
+  box-shadow: 0 0 5px #ff0000;
+}
