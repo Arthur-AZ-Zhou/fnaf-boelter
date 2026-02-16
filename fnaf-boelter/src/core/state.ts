@@ -12,6 +12,7 @@ export const GameState = {
   joeDifficulty: 10,
 
   isGameOver: false,
+  isPowerOut: false,
 
   powerLevel: 100,
   powerUsage: 1,

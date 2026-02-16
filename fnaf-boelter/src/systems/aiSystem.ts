@@ -144,6 +144,7 @@ function triggerDoorAttack(animatronic: 'Carey' | 'Joe'): void {
  * Halts the game and triggers the loss state
  */
 function executeJumpscare(animatronic: 'Carey' | 'Joe'): void {
+  GameState.isMonitorUp = false;
   GameState.isGameOver = true;
   clearInterval(careyTimer);
   clearInterval(joeTimer);

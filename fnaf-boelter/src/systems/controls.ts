@@ -23,6 +23,9 @@ const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
 window.addEventListener('click', (event) => {
+  // Don't allow interactions if power is out or game is over
+  if (GameState.isPowerOut || GameState.isGameOver) return;
+
   // Must convert mouse position to Normalized Device Coordinates (-1 to +1)
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -60,6 +63,9 @@ const camButton = document.getElementById('cam-button') as HTMLButtonElement;
  * Toggle monitor state and updates UI
  */
 function toggleMonitorState(): void {
+  // Don't allow interactions if power is out or game is over
+  if (GameState.isPowerOut || GameState.isGameOver) return;
+
   GameState.isMonitorUp = !GameState.isMonitorUp;
   
   if (GameState.isMonitorUp) {

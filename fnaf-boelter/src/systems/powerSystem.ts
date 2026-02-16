@@ -72,7 +72,7 @@ function updatePowerUI(): void {
  * Triggers the loss state when power hits 0
  */
 function triggerPowerOutage(): void {
-  GameState.isGameOver = true;
+  GameState.isPowerOut = true;
   clearInterval(powerTimer);
   
   // Wipe UI
@@ -84,6 +84,4 @@ function triggerPowerOutage(): void {
   GameState.leftLightOn = false;
   GameState.rightLightOn = false;
   GameState.isMonitorUp = false;
-
-  alert("POWER OUT! Game Over.");
 }

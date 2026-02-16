@@ -20,7 +20,7 @@ export const CONFIG = {
   },
 
   // Game Difficulty
-  CAREY_MOVE_INTERVAL: 4000, // Roll to move every 4 seconds
+  CAREY_MOVE_INTERVAL: 1000, // Roll to move every 4 seconds
   JOE_MOVE_INTERVAL: 5000, // Roll to move every 5 seconds
   ATTACK_WINDOW: 3000, // Player has 3 seconds to close the door
 };
