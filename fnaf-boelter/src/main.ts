@@ -8,6 +8,7 @@ import { CONFIG } from './core/config';
 import { updateCameraSystem } from './systems/cameraSystem';
 import { initAISystem } from './systems/aiSystem';
 import { initPowerSystem } from './systems/powerSystem';
+import { initTimeSystem } from './systems/timeSystem';
 
 
 const camTarget = new THREE.Vector3(0, 0, -10);
@@ -98,4 +99,5 @@ function animate(): void {
 
 initAISystem(); // Start animatronic movement logic
 initPowerSystem(); // Start power drain logic
+initTimeSystem(); // Start time progression and win condition logic
 animate();

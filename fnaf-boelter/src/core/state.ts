@@ -16,4 +16,7 @@ export const GameState = {
 
   powerLevel: 100,
   powerUsage: 1,
+
+  currentHour: 12, // Starts at 12 AM
+  isVictory: false,
 };
