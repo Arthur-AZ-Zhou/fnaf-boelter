@@ -2,3 +2,7 @@ how to run
 
 npm install if first time running
 npm run dev
+
+TO MY TEAMMATES:
+IF YOU ARE DEVING, IN core/state.ts, SET CAREY AND JOE JOE DIFFICULTY 
+BOTH TO 0 TO NOT GET JUMPSCARED AT ALL
