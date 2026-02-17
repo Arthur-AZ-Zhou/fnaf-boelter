@@ -154,6 +154,7 @@ function triggerDoorAttack(animatronic: 'Carey' | 'Joe'): void {
 
 /**
  * Halts the game and triggers the loss state
+ * @param animatronic: Which animatronic is attacking (Carey or Joe)
  */
 function executeJumpscare(animatronic: 'Carey' | 'Joe'): void {
   GameState.isMonitorUp = false;
