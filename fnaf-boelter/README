@@ -6,3 +6,26 @@ npm run dev
 TO MY TEAMMATES:
 IF YOU ARE DEVING, IN core/state.ts, SET CAREY AND JOE JOE DIFFICULTY 
 BOTH TO 0 TO NOT GET JUMPSCARED AT ALL
+
+Audio:
+door open
+door close
+lights on  
+lights off 
+camera static animation
+if run out of power, should make loud unplug sound
+jumpscares
+maybe ambient noise? 
+
+Title card:
+static background (p chattable)
+creepy background of boelter + carey/joe (or both) photoshopped onto it  
+nights 1 to 5 buttons, should set difficulty level of animatronics in core/state.ts
+  night 1: 4 difficulty
+  night 2: 8 difficulty
+  night 3: 12 difficulty
+  night 4: 16 difficulty
+  night 5: 20 difficulty
+
+Decorate office:
+edit either world/office.ts or scene.ts
