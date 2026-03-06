@@ -2,6 +2,27 @@ import * as THREE from 'three';
 import { scene } from '../core/scene';
 import { CONFIG } from '../core/config';
 
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const loader = new GLTFLoader();
+
+function loadModel(path: string, position: THREE.Vector3, scale: THREE.Vector3) {
+  loader.load(path, (gltf) => {
+    const model = gltf.scene;
+
+    model.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+
+    model.position.copy(position);
+    model.scale.copy(scale);
+
+    scene.add(model);
+  });
+}
 
 export const interactables: THREE.Object3D[] = []; // Array for raycasting interactable objects (shoot a ray from 2D mouse to 3D button)
 
