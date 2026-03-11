@@ -24,6 +24,21 @@ function loadModel(path: string, position: THREE.Vector3, scale: THREE.Vector3) 
   });
 }
 
+loadModel('/models/desk.glb',
+  new THREE.Vector3(0, -5, -7),
+  new THREE.Vector3(5, 4.5, 4.5)
+);
+
+loadModel('/models/pc.glb',
+  new THREE.Vector3(0, -1.1, -7),
+  new THREE.Vector3(1.5, 1.5, 1.5)
+);
+
+loadModel('/models/filing_cabinet.glb',
+  new THREE.Vector3(6.5, -3.1, -7),
+  new THREE.Vector3(2, 2, 2)
+);
+
 export const interactables: THREE.Object3D[] = []; // Array for raycasting interactable objects (shoot a ray from 2D mouse to 3D button)
 
 // Load textures for office doors and hallways for lights
