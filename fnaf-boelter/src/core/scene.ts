@@ -5,10 +5,10 @@ import { CONFIG } from './config';
 export const scene = new THREE.Scene();
 
 // Add basic ceiling light
-const ambientLight = new THREE.AmbientLight(CONFIG.COLORS.ON, 0.3);
-const ceilingLight = new THREE.PointLight(CONFIG.COLORS.ON, 200, 50);
+export let ambientLight = new THREE.AmbientLight(CONFIG.COLORS.ON, 0.1);
+export let ceilingLight = new THREE.PointLight(CONFIG.COLORS.ON, 25, 50);
 
-ceilingLight.position.set(1, 3, 0); // Position light slightly above and in front of camera
+ceilingLight.position.set(1, 4, 3); // Position light slightly above and in front of camera
 ceilingLight.castShadow = true;
 ceilingLight.shadow.bias = -0.001;
 

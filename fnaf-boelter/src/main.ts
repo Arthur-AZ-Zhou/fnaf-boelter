@@ -1,6 +1,6 @@
 import './style.css';
 import * as THREE from 'three';
-import { scene, camera, renderer } from './core/scene';
+import { scene, camera, renderer, ambientLight, ceilingLight } from './core/scene';
 import { leftSecurityDoor, rightSecurityDoor, doorMaterials, doorSprites, droplet } from './world/office';
 import './systems/controls';
 import { GameState } from './core/state';
@@ -53,6 +53,10 @@ let clock = new THREE.Clock();
 let lastTime = clock.getElapsedTime();
 let dropletVelocity = 0;
 let secondsUntilNextDrop = 1;
+
+let timeUntilFlickerOff = 1000;
+let timeUntilFlickerOn = 100;
+let isLightOn = true;
 
 /**
  * MAIN GAME LOOP, handles rendering and office camera movement
@@ -112,6 +116,43 @@ function animate(): void {
       droplet.position.y = 4.5;
       dropletVelocity = 0;
       secondsUntilNextDrop = Math.random() * 8 + 1;
+    }
+  }
+
+  const delta_ms = delta * 1000;
+
+  // overhead lights flicker
+  if (isLightOn){
+    if (timeUntilFlickerOff > 0) {
+      timeUntilFlickerOff -= delta_ms;
+      if ((now / 5 ) % 2 == 0)
+        ceilingLight.intensity = 25;
+      else
+        ceilingLight.intensity = 20;
+    }
+    else {
+      ceilingLight.intensity = 10;
+      isLightOn = false;
+      timeUntilFlickerOn = Math.random() * 50 + 10;
+    }
+  }
+  else {
+    if (timeUntilFlickerOn > 0) {
+      timeUntilFlickerOn -= delta_ms;
+    }
+    else {
+      ceilingLight.intensity = 25;
+      isLightOn = true;
+      timeUntilFlickerOff = Math.random() * 5000 + 500;
+
+      // small chance that light turns red
+      ceilingLight.color.setHex(0xEEE8D5);
+      ambientLight.intensity = 0.1;
+      if (Math.random() * 10 < 1) {
+        ceilingLight.color.setHex(0xff0000);
+        timeUntilFlickerOff = Math.random() * 50 + 100;
+        ambientLight.intensity = 0;
+      }
     }
   }
   renderer.render(scene, camera);
