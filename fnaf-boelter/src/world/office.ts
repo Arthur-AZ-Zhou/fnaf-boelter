@@ -6,7 +6,8 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const loader = new GLTFLoader();
 
-function loadModel(path: string, position: THREE.Vector3, scale: THREE.Vector3) {
+function loadModel(path: string, position: THREE.Vector3, scale: THREE.Vector3, 
+  rotationDegrees = new THREE.Vector3(0, 0, 0)) {
   loader.load(path, (gltf) => {
     const model = gltf.scene;
 
@@ -19,6 +20,11 @@ function loadModel(path: string, position: THREE.Vector3, scale: THREE.Vector3) 
 
     model.position.copy(position);
     model.scale.copy(scale);
+    model.rotation.set(
+      THREE.MathUtils.degToRad(rotationDegrees.x),
+      THREE.MathUtils.degToRad(rotationDegrees.y),
+      THREE.MathUtils.degToRad(rotationDegrees.z)
+    );
 
     scene.add(model);
   });
@@ -37,6 +43,41 @@ loadModel('/models/pc.glb',
 loadModel('/models/filing_cabinet.glb',
   new THREE.Vector3(6.5, -3.1, -7),
   new THREE.Vector3(2, 2, 2)
+);
+
+loadModel('/models/pipes.glb',
+  new THREE.Vector3(0, 4.5, -7.5),
+  new THREE.Vector3(1.7, 1.7, 1.7)
+);
+
+loadModel('/models/chair.glb',
+  new THREE.Vector3(.3, -4.2, -5.2),
+  new THREE.Vector3(1, 1, 1),
+  new THREE.Vector3(0, 95, 0)
+);
+
+loadModel('/models/chair.glb',
+  new THREE.Vector3(-8, -4.2, -4.2),
+  new THREE.Vector3(1, 1, 1),
+  new THREE.Vector3(0, -20, 0)
+);
+
+loadModel('/models/chair.glb',
+  new THREE.Vector3(-8, -4.2, 6.2),
+  new THREE.Vector3(1, 1, 1),
+  new THREE.Vector3(0, 8, 0)
+);
+
+loadModel('/models/chair.glb',
+  new THREE.Vector3(-7.9, -3.9, 6.1),
+  new THREE.Vector3(1, 1, 1),
+  new THREE.Vector3(0, 9, 0)
+);
+
+loadModel('/models/chair.glb',
+  new THREE.Vector3(-7.6, -3.5, 5.9),
+  new THREE.Vector3(1, 1, 1),
+  new THREE.Vector3(2, 15, 2)
 );
 
 export const interactables: THREE.Object3D[] = []; // Array for raycasting interactable objects (shoot a ray from 2D mouse to 3D button)
@@ -190,10 +231,10 @@ const dropletGeometry = new THREE.SphereGeometry(0.1, 5, 5);
 const dropletMaterial = new THREE.MeshStandardMaterial({ color: 0x88ccff });
 
 export const droplet = new THREE.Mesh(dropletGeometry, dropletMaterial);
-droplet.position.set(-9, 4.5, -8); // start at ceiling
+droplet.position.set(-8, 4.3, -7.5); // start at ceiling
 scene.add(droplet);
 
 // added an extra droplet model to stay at the starting point of the moving droplet
 export const static_droplet = new THREE.Mesh(dropletGeometry, dropletMaterial);
-static_droplet.position.set(-9, 4.5, -8); // start at ceiling
+static_droplet.position.set(-8, 4.2, -7.5); // start at ceiling
 scene.add(static_droplet);
