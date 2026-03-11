@@ -1,7 +1,7 @@
 import './style.css';
 import * as THREE from 'three';
 import { scene, camera, renderer } from './core/scene';
-import { leftSecurityDoor, rightSecurityDoor, doorMaterials, doorSprites } from './world/office';
+import { leftSecurityDoor, rightSecurityDoor, doorMaterials, doorSprites, droplet } from './world/office';
 import './systems/controls';
 import { GameState } from './core/state';
 import { CONFIG } from './core/config';
@@ -48,6 +48,12 @@ function updateDoorPosition(door: THREE.Mesh, isClosed: boolean): void {
   door.position.y += (targetY - door.position.y) * 0.1;
 }
 
+let clock = new THREE.Clock();
+
+let lastTime = clock.getElapsedTime();
+let dropletVelocity = 0;
+let secondsUntilNextDrop = 1;
+
 /**
  * MAIN GAME LOOP, handles rendering and office camera movement
  */
@@ -93,6 +99,21 @@ function animate(): void {
   updateDoorPosition(leftSecurityDoor, GameState.leftDoorClosed);
   updateDoorPosition(rightSecurityDoor, GameState.rightDoorClosed);
 
+  // calculate droplet position
+  const now = performance.now();
+  const delta = (now - lastTime) / 1000; // seconds since last frame
+  lastTime = now;
+
+  secondsUntilNextDrop -= delta;
+  if (secondsUntilNextDrop < 0) {
+    droplet.position.y += dropletVelocity * delta; // 1.8 world units per second, always
+    dropletVelocity -= 30 * delta;    // gravitational constant was to slow for the scale, 30 ended up being the most natural acceleration
+    if (droplet.position.y < -5) {
+      droplet.position.y = 4.5;
+      dropletVelocity = 0;
+      secondsUntilNextDrop = Math.random() * 8 + 1;
+    }
+  }
   renderer.render(scene, camera);
 }
 

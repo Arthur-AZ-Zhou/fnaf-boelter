@@ -139,14 +139,36 @@ function createWallButton(x: number, y: number, z: number, name: string, color: 
   return btn;
 }
 
-const roomGeometry = new THREE.BoxGeometry(20, 10, 17.5);
-const roomMaterial = new THREE.MeshStandardMaterial({ 
-  color: CONFIG.COLORS.ROOM_MATERIAL, 
-  side: THREE.BackSide, // Renders texture on cube's inside
+const wallMaterial = new THREE.MeshStandardMaterial({
+  color: CONFIG.COLORS.ROOM_MATERIAL,
+  side: THREE.BackSide,
   roughness: 0.8,
-  metalness: 0.1,
+  metalness: 0.1
 });
-const room = new THREE.Mesh(roomGeometry, roomMaterial);
+
+const floorMaterial = new THREE.MeshStandardMaterial({
+  color: 0x292e2b,
+  side: THREE.BackSide
+});
+
+const ceilingMaterial = new THREE.MeshStandardMaterial({
+  color: 0x757371,
+  side: THREE.BackSide
+});
+
+const materials = [
+  wallMaterial,
+  wallMaterial,
+  ceilingMaterial,
+  floorMaterial,
+  wallMaterial,
+  wallMaterial
+];
+
+const roomGeometry = new THREE.BoxGeometry(20, 10, 17.5);
+const room = new THREE.Mesh(roomGeometry, materials);
+room.receiveShadow = true;
+
 
 scene.add(room);
 
@@ -160,3 +182,18 @@ export const leftLightButton = createWallButton(-9.8, -1.5, 2.5, 'left_light', C
 export const rightLightButton = createWallButton(9.8, -1.5, 2.5, 'right_light', CONFIG.COLORS.BUTTON_OFF);
 export const leftDoorButton  = createWallButton(-9.8, 0, 2.5, 'left_door', CONFIG.COLORS.BUTTON_OFF);
 export const rightDoorButton  = createWallButton(9.8, 0, 2.5, 'right_door', CONFIG.COLORS.BUTTON_OFF);
+
+
+
+// Water droplet particle system
+const dropletGeometry = new THREE.SphereGeometry(0.1, 5, 5);
+const dropletMaterial = new THREE.MeshStandardMaterial({ color: 0x88ccff });
+
+export const droplet = new THREE.Mesh(dropletGeometry, dropletMaterial);
+droplet.position.set(-9, 4.5, -8); // start at ceiling
+scene.add(droplet);
+
+// added an extra droplet model to stay at the starting point of the moving droplet
+export const static_droplet = new THREE.Mesh(dropletGeometry, dropletMaterial);
+static_droplet.position.set(-9, 4.5, -8); // start at ceiling
+scene.add(static_droplet);
