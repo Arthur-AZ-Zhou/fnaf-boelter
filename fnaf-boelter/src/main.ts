@@ -1,7 +1,7 @@
 import './style.css';
 import * as THREE from 'three';
-import { scene, camera, renderer } from './core/scene';
-import { leftSecurityDoor, rightSecurityDoor, doorMaterials, doorSprites } from './world/office';
+import { scene, camera, renderer, ambientLight, ceilingLight, lightPanelMat } from './core/scene';
+import { leftSecurityDoor, rightSecurityDoor, doorMaterials, doorSprites, droplet } from './world/office';
 import './systems/controls';
 import { GameState } from './core/state';
 import { CONFIG } from './core/config';
@@ -48,6 +48,16 @@ function updateDoorPosition(door: THREE.Mesh, isClosed: boolean): void {
   door.position.y += (targetY - door.position.y) * 0.1;
 }
 
+let clock = new THREE.Clock();
+
+let lastTime = clock.getElapsedTime();
+let dropletVelocity = 0;
+let secondsUntilNextDrop = 1;
+
+let timeUntilFlickerOff = 1000;
+let timeUntilFlickerOn = 100;
+let isLightOn = true;
+
 /**
  * MAIN GAME LOOP, handles rendering and office camera movement
  */
@@ -93,6 +103,61 @@ function animate(): void {
   updateDoorPosition(leftSecurityDoor, GameState.leftDoorClosed);
   updateDoorPosition(rightSecurityDoor, GameState.rightDoorClosed);
 
+  // calculate droplet position
+  const now = performance.now();
+  const delta = (now - lastTime) / 1000; // seconds since last frame
+  lastTime = now;
+
+  secondsUntilNextDrop -= delta;
+  if (secondsUntilNextDrop < 0) {
+    droplet.position.y += dropletVelocity * delta; // 1.8 world units per second, always
+    dropletVelocity -= 30 * delta;    // gravitational constant was to slow for the scale, 30 ended up being the most natural acceleration
+    if (droplet.position.y < -5) {
+      droplet.position.y = 4.5;
+      dropletVelocity = 0;
+      secondsUntilNextDrop = Math.random() * 8 + 1;
+    }
+  }
+
+  const delta_ms = delta * 1000;
+
+  // overhead lights flicker
+  if (isLightOn){
+    if (timeUntilFlickerOff > 0) {
+      timeUntilFlickerOff -= delta_ms;
+      if ((now / 5 ) % 2 == 0)
+        ceilingLight.intensity = 35;
+      else
+        ceilingLight.intensity = 30;
+    }
+    else {
+      ceilingLight.intensity = 10;
+      isLightOn = false;
+      timeUntilFlickerOn = Math.random() * 50 + 10;
+    }
+  }
+  else {
+    if (timeUntilFlickerOn > 0) {
+      timeUntilFlickerOn -= delta_ms;
+    }
+    else {
+      ceilingLight.intensity = 35;
+      ambientLight.intensity = 0.2;
+      ceilingLight.color.setHex(0xEEE8D5);
+      lightPanelMat.color.setHex(0xb0ab9b);
+      isLightOn = true;
+      timeUntilFlickerOff = Math.random() * 5000 + 500;
+
+      // small chance that light turns red
+      if (Math.random() * 10 < 1) {
+        ceilingLight.color.setHex(0xff0000);
+        ceilingLight.intensity = 10;
+        timeUntilFlickerOff = Math.random() * 50 + 100;
+        ambientLight.intensity = 0;
+        lightPanelMat.color.setHex(0x000000);
+      }
+    }
+  }
   renderer.render(scene, camera);
 }
 

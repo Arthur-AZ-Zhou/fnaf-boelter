@@ -2,6 +2,83 @@ import * as THREE from 'three';
 import { scene } from '../core/scene';
 import { CONFIG } from '../core/config';
 
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const loader = new GLTFLoader();
+
+function loadModel(path: string, position: THREE.Vector3, scale: THREE.Vector3, 
+  rotationDegrees = new THREE.Vector3(0, 0, 0)) {
+  loader.load(path, (gltf) => {
+    const model = gltf.scene;
+
+    model.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+
+    model.position.copy(position);
+    model.scale.copy(scale);
+    model.rotation.set(
+      THREE.MathUtils.degToRad(rotationDegrees.x),
+      THREE.MathUtils.degToRad(rotationDegrees.y),
+      THREE.MathUtils.degToRad(rotationDegrees.z)
+    );
+
+    scene.add(model);
+  });
+}
+
+loadModel('/models/desk.glb',
+  new THREE.Vector3(0, -5, -7),
+  new THREE.Vector3(5, 4.5, 4.5)
+);
+
+loadModel('/models/pc.glb',
+  new THREE.Vector3(0, -1.1, -7),
+  new THREE.Vector3(1.5, 1.5, 1.5)
+);
+
+loadModel('/models/filing_cabinet.glb',
+  new THREE.Vector3(6.5, -3.1, -7),
+  new THREE.Vector3(2, 2, 2)
+);
+
+loadModel('/models/pipes.glb',
+  new THREE.Vector3(0, 4.5, -7.5),
+  new THREE.Vector3(1.7, 1.7, 1.7)
+);
+
+loadModel('/models/chair.glb',
+  new THREE.Vector3(.3, -4.2, -5.2),
+  new THREE.Vector3(1, 1, 1),
+  new THREE.Vector3(0, 95, 0)
+);
+
+loadModel('/models/chair.glb',
+  new THREE.Vector3(-8, -4.2, -4.2),
+  new THREE.Vector3(1, 1, 1),
+  new THREE.Vector3(0, -20, 0)
+);
+
+loadModel('/models/chair.glb',
+  new THREE.Vector3(-8, -4.2, 6.2),
+  new THREE.Vector3(1, 1, 1),
+  new THREE.Vector3(0, 8, 0)
+);
+
+loadModel('/models/chair.glb',
+  new THREE.Vector3(-7.9, -3.9, 6.1),
+  new THREE.Vector3(1, 1, 1),
+  new THREE.Vector3(0, 9, 0)
+);
+
+loadModel('/models/chair.glb',
+  new THREE.Vector3(-7.6, -3.5, 5.9),
+  new THREE.Vector3(1, 1, 1),
+  new THREE.Vector3(2, 15, 2)
+);
 
 export const interactables: THREE.Object3D[] = []; // Array for raycasting interactable objects (shoot a ray from 2D mouse to 3D button)
 
@@ -13,8 +90,8 @@ const careyDoorTex = textureLoader.load('/sprites/carey_leftdoor.png');
 const joeDoorTex = textureLoader.load('/sprites/joe_rightdoor.png');
 
 export const doorMaterials = {
-  leftBg: new THREE.MeshBasicMaterial({ map: leftHallTex, color: CONFIG.COLORS.OFF }),
-  rightBg: new THREE.MeshBasicMaterial({ map: rightHallTex, color: CONFIG.COLORS.OFF }),
+  leftBg: new THREE.MeshBasicMaterial({ map: leftHallTex, color: CONFIG.COLORS.CLOSED_DOOR }),
+  rightBg: new THREE.MeshBasicMaterial({ map: rightHallTex, color: CONFIG.COLORS.CLOSED_DOOR }),
   leftSprite: new THREE.MeshBasicMaterial({ map: careyDoorTex, color: CONFIG.COLORS.OFF, transparent: true }),
   rightSprite: new THREE.MeshBasicMaterial({ map: joeDoorTex, color: CONFIG.COLORS.OFF, transparent: true })
 };
@@ -103,14 +180,55 @@ function createWallButton(x: number, y: number, z: number, name: string, color: 
   return btn;
 }
 
-const roomGeometry = new THREE.BoxGeometry(20, 10, 17.5);
-const roomMaterial = new THREE.MeshStandardMaterial({ 
-  color: CONFIG.COLORS.ROOM_MATERIAL, 
-  side: THREE.BackSide, // Renders texture on cube's inside
+const wallMaterial = new THREE.MeshStandardMaterial({
+  color: CONFIG.COLORS.ROOM_MATERIAL,
+  side: THREE.BackSide,
   roughness: 0.8,
-  metalness: 0.1,
+  metalness: 0.1
 });
-const room = new THREE.Mesh(roomGeometry, roomMaterial);
+
+const floorMaterial = new THREE.MeshStandardMaterial({
+  color: 0x292e2b,
+  side: THREE.BackSide
+});
+
+function loadTiledTexture(path: string) {
+  const tex = textureLoader.load(path);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(1, 1);
+  return tex;
+}
+
+// we got the ceiling texture from https://ambientcg.com/view?id=OfficeCeiling001
+const ceilingMaterial = new THREE.MeshStandardMaterial({
+  color:  0x777777,  // add base color to make the ceiling texture a little darker
+  map:              loadTiledTexture('/textures/ceiling/OfficeCeiling001_1K-JPG_Color.jpg'),
+  aoMap:            loadTiledTexture('/textures/ceiling/OfficeCeiling001_1K-JPG_AmbientOcclusion.jpg'),
+  displacementMap:  loadTiledTexture('/textures/ceiling/OfficeCeiling001_1K-JPG_Displacement.jpg'),
+  metalnessMap:     loadTiledTexture('/textures/ceiling/OfficeCeiling001_1K-JPG_Metalness.jpg'),
+  normalMap:        loadTiledTexture('/textures/ceiling/OfficeCeiling001_1K-JPG_NormalGL.jpg'), // use NormalGL for Three.js, not NormalDX
+  roughnessMap:     loadTiledTexture('/textures/ceiling/OfficeCeiling001_1K-JPG_Roughness.jpg'),
+  
+  normalMapType:    THREE.TangentSpaceNormalMap,
+  displacementScale: 0.05, // keep low or ceiling will look lumpy
+  side:             THREE.BackSide,
+});
+
+
+const materials = [
+  wallMaterial,
+  wallMaterial,
+  ceilingMaterial,
+  floorMaterial,
+  wallMaterial,
+  wallMaterial
+];
+
+const roomGeometry = new THREE.BoxGeometry(20, 10, 17.5);
+const room = new THREE.Mesh(roomGeometry, materials);
+room.receiveShadow = true;
+
 
 scene.add(room);
 
@@ -124,3 +242,18 @@ export const leftLightButton = createWallButton(-9.8, -1.5, 2.5, 'left_light', C
 export const rightLightButton = createWallButton(9.8, -1.5, 2.5, 'right_light', CONFIG.COLORS.BUTTON_OFF);
 export const leftDoorButton  = createWallButton(-9.8, 0, 2.5, 'left_door', CONFIG.COLORS.BUTTON_OFF);
 export const rightDoorButton  = createWallButton(9.8, 0, 2.5, 'right_door', CONFIG.COLORS.BUTTON_OFF);
+
+
+
+// Water droplet particle system
+const dropletGeometry = new THREE.SphereGeometry(0.1, 5, 5);
+const dropletMaterial = new THREE.MeshPhongMaterial({ color: 0x5673ba, specular: 1, refractionRatio: 0.8 });
+
+export const droplet = new THREE.Mesh(dropletGeometry, dropletMaterial);
+droplet.position.set(-8, 4.3, -7.5); // start at ceiling
+scene.add(droplet);
+
+// added an extra droplet model to stay at the starting point of the moving droplet
+export const static_droplet = new THREE.Mesh(dropletGeometry, dropletMaterial);
+static_droplet.position.set(-8, 4.2, -7.5); // start at ceiling
+scene.add(static_droplet);
