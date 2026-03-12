@@ -1,6 +1,6 @@
 import './style.css';
 import * as THREE from 'three';
-import { scene, camera, renderer, ambientLight, ceilingLight } from './core/scene';
+import { scene, camera, renderer, ambientLight, ceilingLight, lightPanelMat } from './core/scene';
 import { leftSecurityDoor, rightSecurityDoor, doorMaterials, doorSprites, droplet } from './world/office';
 import './systems/controls';
 import { GameState } from './core/state';
@@ -126,9 +126,9 @@ function animate(): void {
     if (timeUntilFlickerOff > 0) {
       timeUntilFlickerOff -= delta_ms;
       if ((now / 5 ) % 2 == 0)
-        ceilingLight.intensity = 25;
+        ceilingLight.intensity = 35;
       else
-        ceilingLight.intensity = 20;
+        ceilingLight.intensity = 30;
     }
     else {
       ceilingLight.intensity = 10;
@@ -141,17 +141,20 @@ function animate(): void {
       timeUntilFlickerOn -= delta_ms;
     }
     else {
-      ceilingLight.intensity = 25;
+      ceilingLight.intensity = 35;
+      ambientLight.intensity = 0.2;
+      ceilingLight.color.setHex(0xEEE8D5);
+      lightPanelMat.color.setHex(0xb0ab9b);
       isLightOn = true;
       timeUntilFlickerOff = Math.random() * 5000 + 500;
 
       // small chance that light turns red
-      ceilingLight.color.setHex(0xEEE8D5);
-      ambientLight.intensity = 0.1;
       if (Math.random() * 10 < 1) {
         ceilingLight.color.setHex(0xff0000);
+        ceilingLight.intensity = 10;
         timeUntilFlickerOff = Math.random() * 50 + 100;
         ambientLight.intensity = 0;
+        lightPanelMat.color.setHex(0x000000);
       }
     }
   }

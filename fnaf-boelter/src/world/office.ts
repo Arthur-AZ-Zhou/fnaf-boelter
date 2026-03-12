@@ -90,8 +90,8 @@ const careyDoorTex = textureLoader.load('/sprites/carey_leftdoor.png');
 const joeDoorTex = textureLoader.load('/sprites/joe_rightdoor.png');
 
 export const doorMaterials = {
-  leftBg: new THREE.MeshBasicMaterial({ map: leftHallTex, color: CONFIG.COLORS.OFF }),
-  rightBg: new THREE.MeshBasicMaterial({ map: rightHallTex, color: CONFIG.COLORS.OFF }),
+  leftBg: new THREE.MeshBasicMaterial({ map: leftHallTex, color: CONFIG.COLORS.CLOSED_DOOR }),
+  rightBg: new THREE.MeshBasicMaterial({ map: rightHallTex, color: CONFIG.COLORS.CLOSED_DOOR }),
   leftSprite: new THREE.MeshBasicMaterial({ map: careyDoorTex, color: CONFIG.COLORS.OFF, transparent: true }),
   rightSprite: new THREE.MeshBasicMaterial({ map: joeDoorTex, color: CONFIG.COLORS.OFF, transparent: true })
 };
@@ -192,10 +192,29 @@ const floorMaterial = new THREE.MeshStandardMaterial({
   side: THREE.BackSide
 });
 
+function loadTiledTexture(path: string) {
+  const tex = textureLoader.load(path);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(1, 1);
+  return tex;
+}
+
+// we got the ceiling texture from https://ambientcg.com/view?id=OfficeCeiling001
 const ceilingMaterial = new THREE.MeshStandardMaterial({
-  color: 0x757371,
-  side: THREE.BackSide
+  color:  0x777777,  // add base color to make the ceiling texture a little darker
+  map:              loadTiledTexture('/textures/ceiling/OfficeCeiling001_1K-JPG_Color.jpg'),
+  aoMap:            loadTiledTexture('/textures/ceiling/OfficeCeiling001_1K-JPG_AmbientOcclusion.jpg'),
+  displacementMap:  loadTiledTexture('/textures/ceiling/OfficeCeiling001_1K-JPG_Displacement.jpg'),
+  metalnessMap:     loadTiledTexture('/textures/ceiling/OfficeCeiling001_1K-JPG_Metalness.jpg'),
+  normalMap:        loadTiledTexture('/textures/ceiling/OfficeCeiling001_1K-JPG_NormalGL.jpg'), // use NormalGL for Three.js, not NormalDX
+  roughnessMap:     loadTiledTexture('/textures/ceiling/OfficeCeiling001_1K-JPG_Roughness.jpg'),
+  
+  normalMapType:    THREE.TangentSpaceNormalMap,
+  displacementScale: 0.05, // keep low or ceiling will look lumpy
+  side:             THREE.BackSide,
 });
+
 
 const materials = [
   wallMaterial,
@@ -228,7 +247,7 @@ export const rightDoorButton  = createWallButton(9.8, 0, 2.5, 'right_door', CONF
 
 // Water droplet particle system
 const dropletGeometry = new THREE.SphereGeometry(0.1, 5, 5);
-const dropletMaterial = new THREE.MeshStandardMaterial({ color: 0x88ccff });
+const dropletMaterial = new THREE.MeshPhongMaterial({ color: 0x5673ba, specular: 1, refractionRatio: 0.8 });
 
 export const droplet = new THREE.Mesh(dropletGeometry, dropletMaterial);
 droplet.position.set(-8, 4.3, -7.5); // start at ceiling

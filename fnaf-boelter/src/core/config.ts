@@ -16,7 +16,7 @@ export const CONFIG = {
 
     // Material Colors
     ROOM_MATERIAL: 0x594f43,
-    CLOSED_DOOR: 0x1A1C1E,
+    CLOSED_DOOR: 0x4D4C4E,
   },
 
   // Game Difficulty
