@@ -80,6 +80,13 @@ loadModel('/models/chair.glb',
   new THREE.Vector3(2, 15, 2)
 );
 
+loadModel('/models/whiteboard.glb',
+  new THREE.Vector3(3, -1.55, 6.2),
+  new THREE.Vector3(1, 1, 1),
+  new THREE.Vector3(0, 8, 0)
+);
+
+
 export const interactables: THREE.Object3D[] = []; // Array for raycasting interactable objects (shoot a ray from 2D mouse to 3D button)
 
 // Load textures for office doors and hallways for lights
@@ -257,3 +264,11 @@ scene.add(droplet);
 export const static_droplet = new THREE.Mesh(dropletGeometry, dropletMaterial);
 static_droplet.position.set(-8, 4.2, -7.5); // start at ceiling
 scene.add(static_droplet);
+
+export const droplet2 = new THREE.Mesh(dropletGeometry, dropletMaterial);
+droplet2.position.set(-7, 4.25, -7.6); // start at ceiling
+scene.add(droplet2);
+
+export const static_droplet2 = new THREE.Mesh(dropletGeometry, dropletMaterial);
+static_droplet2.position.set(-7, 4.25, -7.6); // start at ceiling
+scene.add(static_droplet2);

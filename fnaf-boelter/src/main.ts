@@ -1,7 +1,7 @@
 import './style.css';
 import * as THREE from 'three';
 import { scene, camera, renderer, ambientLight, ceilingLight, lightPanelMat } from './core/scene';
-import { leftSecurityDoor, rightSecurityDoor, doorMaterials, doorSprites, droplet } from './world/office';
+import { leftSecurityDoor, rightSecurityDoor, doorMaterials, doorSprites, droplet, droplet2 } from './world/office';
 import './systems/controls';
 import { GameState } from './core/state';
 import { CONFIG } from './core/config';
@@ -52,7 +52,9 @@ let clock = new THREE.Clock();
 
 let lastTime = clock.getElapsedTime();
 let dropletVelocity = 0;
-let secondsUntilNextDrop = 1;
+let secondsUntilNextDrop = 2;
+let droplet2Velocity = 0;
+let secondsUntilNextDrop2 = 1;
 
 let timeUntilFlickerOff = 1000;
 let timeUntilFlickerOn = 100;
@@ -116,6 +118,17 @@ function animate(): void {
       droplet.position.y = 4.5;
       dropletVelocity = 0;
       secondsUntilNextDrop = Math.random() * 8 + 1;
+    }
+  }
+
+  secondsUntilNextDrop2 -= delta;
+  if (secondsUntilNextDrop2 < 0) {
+    droplet2.position.y += droplet2Velocity * delta; // 1.8 world units per second, always
+    droplet2Velocity -= 30 * delta;    // gravitational constant was to slow for the scale, 30 ended up being the most natural acceleration
+    if (droplet2.position.y < -5) {
+      droplet2.position.y = 4.5;
+      droplet2Velocity = 0;
+      secondsUntilNextDrop2 = Math.random() * 2 + 0.1;
     }
   }
 
