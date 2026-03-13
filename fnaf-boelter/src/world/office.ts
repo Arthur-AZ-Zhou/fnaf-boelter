@@ -9,8 +9,10 @@ const loader = new GLTFLoader();
 export const interactables: THREE.Object3D[] = []; // Array for raycasting interactable objects (shoot a ray from 2D mouse to 3D button)
 
 function loadModel(path: string, position: THREE.Vector3, scale: THREE.Vector3, 
-  rotationDegrees = new THREE.Vector3(0, 0, 0)): Promise<THREE.Group> {
+  rotationDegrees = new THREE.Vector3(0, 0, 0), isSolid = false): Promise<THREE.Group> {
   return new Promise((resolve) => {
+export const solidObjects: THREE.Object3D[] = [];
+
   loader.load(path, (gltf) => {
     const model = gltf.scene;
 
@@ -35,28 +37,31 @@ function loadModel(path: string, position: THREE.Vector3, scale: THREE.Vector3,
   });
 }
 
-export function makeInteractable(object: THREE.Group, id: string): void {
-  object.traverse((child) => {
-    if ((child as THREE.Mesh).isMesh) {
-      child.userData = { id };
-      interactables.push(child);
+    if (isSolid) {
+      solidObjects.push(model);
     }
   });
 }
 
 loadModel('/models/desk.glb',
   new THREE.Vector3(0, -5, -7),
-  new THREE.Vector3(5, 4.5, 4.5)
+  new THREE.Vector3(5, 4.5, 4.5),
+  new THREE.Vector3(0, 0, 0),
+  true
 );
 
 export const computer = await loadModel('/models/pc.glb',
   new THREE.Vector3(0, -1.1, -7),
-  new THREE.Vector3(1.5, 1.5, 1.5)
+  new THREE.Vector3(1.5, 1.5, 1.5),
+  new THREE.Vector3(0, 0, 0),
+  true
 );
 
 loadModel('/models/filing_cabinet.glb',
   new THREE.Vector3(6.5, -3.1, -7),
-  new THREE.Vector3(2, 2, 2)
+  new THREE.Vector3(2, 2, 2),
+  new THREE.Vector3(0, 0, 0),
+  true
 );
 
 loadModel('/models/pipes.glb',
@@ -67,7 +72,8 @@ loadModel('/models/pipes.glb',
 loadModel('/models/chair.glb',
   new THREE.Vector3(.3, -4.2, -5.2),
   new THREE.Vector3(1, 1, 1),
-  new THREE.Vector3(0, 95, 0)
+  new THREE.Vector3(0, 95, 0),
+  true
 );
 
 loadModel('/models/chair.glb',
@@ -262,7 +268,7 @@ const materials = [
   wallMaterial
 ];
 
-const roomGeometry = new THREE.BoxGeometry(20, 10, 17.5);
+const roomGeometry = new THREE.BoxGeometry(20, 10, 24);
 const room = new THREE.Mesh(roomGeometry, materials);
 room.receiveShadow = true;
 

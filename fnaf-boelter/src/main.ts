@@ -3,12 +3,14 @@ import * as THREE from 'three';
 import { scene, camera, renderer, ambientLight, ceilingLight, lightPanelMat } from './core/scene';
 import { leftSecurityDoor, rightSecurityDoor, doorMaterials, doorSprites, droplet, droplet2, hour_hand, minute_hand } from './world/office';
 import './systems/controls';
+import { syncControlButtonUI } from './systems/controls';
 import { GameState } from './core/state';
 import { CONFIG } from './core/config';
 import { updateCameraSystem } from './systems/cameraSystem';
 import { initAISystem } from './systems/aiSystem';
 import { initPowerSystem } from './systems/powerSystem';
 import { initTimeSystem } from './systems/timeSystem';
+import { updatePlayerSystem } from './systems/playerSystem';
 
 
 const camTarget = new THREE.Vector3(0, 0, -10);
@@ -73,9 +75,12 @@ let chance_of_evil = 0.0;
 function animate(): void {
   requestAnimationFrame(animate);
 
-  // Camera Movements
+  // Camera Movements (base pan — overridden by player system below)
   camTarget.x += (mouseX * CONFIG.SENSITIVITY - camTarget.x) * CONFIG.CAMERA_SPEED;
   camera.lookAt(camTarget);
+
+  // Update player movement (must run AFTER camTarget.lookAt so player camera wins)
+  updatePlayerSystem();
 
   // Update Cameras
   updateCameraSystem(); // Handle monitor animation and static effect
@@ -111,6 +116,9 @@ function animate(): void {
 
   updateDoorPosition(leftSecurityDoor, GameState.leftDoorClosed);
   updateDoorPosition(rightSecurityDoor, GameState.rightDoorClosed);
+
+  // Keep HTML and 3D door/light controls in sync with current GameState.
+  syncControlButtonUI();
 
   // calculate droplet position
   const now = performance.now();

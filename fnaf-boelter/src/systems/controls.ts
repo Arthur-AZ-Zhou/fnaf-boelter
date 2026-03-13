@@ -16,6 +16,24 @@ function updateButtonVisuals(mesh: THREE.Mesh, isOn: boolean, colorOn: number, c
   mat.color.setHex(isOn ? colorOn : colorOff);
 }
 
+function syncDoorLightButtonVisuals(): void {
+  updateButtonVisuals(leftDoorButton, GameState.leftDoorClosed, CONFIG.COLORS.DOOR_BUTTON_ON, CONFIG.COLORS.BUTTON_OFF);
+  updateButtonVisuals(rightDoorButton, GameState.rightDoorClosed, CONFIG.COLORS.DOOR_BUTTON_ON, CONFIG.COLORS.BUTTON_OFF);
+  updateButtonVisuals(leftLightButton, GameState.leftLightOn, CONFIG.COLORS.BUTTON_ON, CONFIG.COLORS.BUTTON_OFF);
+  updateButtonVisuals(rightLightButton, GameState.rightLightOn, CONFIG.COLORS.BUTTON_ON, CONFIG.COLORS.BUTTON_OFF);
+
+  leftDoorBtn.classList.toggle('active-door', GameState.leftDoorClosed);
+  rightDoorBtn.classList.toggle('active-door', GameState.rightDoorClosed);
+  leftLightBtn.classList.toggle('active-light', GameState.leftLightOn);
+  rightLightBtn.classList.toggle('active-light', GameState.rightLightOn);
+
+  const disabled = guard();
+  leftDoorBtn.disabled = disabled;
+  rightDoorBtn.disabled = disabled;
+  leftLightBtn.disabled = disabled;
+  rightLightBtn.disabled = disabled;
+}
+
 /**
  * RAYCASTING: handle 2D clicks on 3D buttons
  */
@@ -39,21 +57,19 @@ window.addEventListener('click', (event) => {
 
     if (btnId === 'left_light') {
       GameState.leftLightOn = !GameState.leftLightOn;
-      updateButtonVisuals(leftLightButton, GameState.leftLightOn, CONFIG.COLORS.BUTTON_ON, CONFIG.COLORS.BUTTON_OFF);
 
     } else if (btnId === 'right_light') {
       GameState.rightLightOn = !GameState.rightLightOn;
-      updateButtonVisuals(rightLightButton, GameState.rightLightOn, CONFIG.COLORS.BUTTON_ON, CONFIG.COLORS.BUTTON_OFF);
       
     } else if (btnId === 'left_door') {
       GameState.leftDoorClosed = !GameState.leftDoorClosed;
-      updateButtonVisuals(leftDoorButton, GameState.leftDoorClosed, CONFIG.COLORS.DOOR_BUTTON_ON, CONFIG.COLORS.BUTTON_OFF);
 
     } else if (btnId === 'right_door') {
       GameState.rightDoorClosed = !GameState.rightDoorClosed;
-      updateButtonVisuals(rightDoorButton, GameState.rightDoorClosed, CONFIG.COLORS.DOOR_BUTTON_ON, CONFIG.COLORS.BUTTON_OFF);
       
     }
+
+    syncDoorLightButtonVisuals();
   }
 });
 
@@ -80,3 +96,44 @@ function toggleMonitorState(): void {
 }
 
 camButton.addEventListener('click', toggleMonitorState);
+
+// ── HTML side-panel door / light buttons ─────────────────────────────────────
+const leftDoorBtn  = document.getElementById('left-door-btn')  as HTMLButtonElement;
+const leftLightBtn = document.getElementById('left-light-btn') as HTMLButtonElement;
+const rightDoorBtn  = document.getElementById('right-door-btn')  as HTMLButtonElement;
+const rightLightBtn = document.getElementById('right-light-btn') as HTMLButtonElement;
+
+function guard(): boolean {
+  return GameState.isPowerOut || GameState.isGameOver || GameState.isMonitorUp;
+}
+
+leftDoorBtn.addEventListener('click', () => {
+  if (guard()) return;
+  GameState.leftDoorClosed = !GameState.leftDoorClosed;
+  syncDoorLightButtonVisuals();
+});
+
+leftLightBtn.addEventListener('click', () => {
+  if (guard()) return;
+  GameState.leftLightOn = !GameState.leftLightOn;
+  syncDoorLightButtonVisuals();
+});
+
+rightDoorBtn.addEventListener('click', () => {
+  if (guard()) return;
+  GameState.rightDoorClosed = !GameState.rightDoorClosed;
+  syncDoorLightButtonVisuals();
+});
+
+rightLightBtn.addEventListener('click', () => {
+  if (guard()) return;
+  GameState.rightLightOn = !GameState.rightLightOn;
+  syncDoorLightButtonVisuals();
+});
+
+// Initialize to match current GameState at startup.
+syncDoorLightButtonVisuals();
+
+export function syncControlButtonUI(): void {
+  syncDoorLightButtonVisuals();
+}
