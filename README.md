@@ -10,7 +10,7 @@ npm install
 npm run dev
 ~~~
 
-> **TO MY TEAMMATES:** If you are testing UI or building out the 3D office and do not want to deal with jumpscares, go into `src/core/state.ts` and set both `careyDifficulty` and `joeDifficulty` to `0`. This will safely freeze their AI loops so you don't get jumpscaed while attempting to change something.
+> **TO ANY FUTURE DEVS:** If you are testing UI or building out the 3D office and do not want to deal with jumpscares, go into `src/core/state.ts` and set both `careyDifficulty` and `joeDifficulty` to `0`. This will safely freeze their AI loops so you don't get jumpscaed while attempting to change something.
 
 
 ## Project Overview & Core Mechanics
@@ -18,6 +18,9 @@ The core game loop is heavily resource-management focused. You must balance your
 
 ### The Office
 The main stage is a 3D room (`src/world/office.ts`) equipped with two security doors on the left and right. Each doorway has a functional light switch and a close-door button. These doors are your only line of defense against Carey and Joe.
+
+### Movement
+The player can use the arrow keys to change direction and the "w" key to move forwards
 
 ### Animatronic AI
 Carey and Joe navigate Boelter Hall using a non-deterministic, RNG-based pathing system. Their movement frequency scales with the night's difficulty level. Once an animatronic reaches your doorway, you have exactly **5 seconds** to react and close the door before they trigger a jumpscare.
@@ -49,6 +52,3 @@ The entry point of the game needs a static background overlaying a creepy photos
 * **Night 3:** Difficulty 12
 * **Night 4:** Difficulty 16
 * **Night 5:** Difficulty 20
-
-### Office Decoration
-The 3D office is currently a functional grey-box. We need to import 3D models (desks, posters, monitors, trash cans, etc) to flesh out the environment. Edits for this should be localized to `src/world/office.ts` or `src/core/scene.ts`.
