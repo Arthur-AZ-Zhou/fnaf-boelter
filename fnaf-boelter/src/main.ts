@@ -149,9 +149,6 @@ function animate(): void {
 
   const delta_ms = delta * 1000;
 
-  debugEl.innerHTML = `
-    chance_of_evil: ${chance_of_evil}
-  `;
 
   // overhead lights flicker
   if (isLightOn){
