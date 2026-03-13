@@ -19,4 +19,6 @@ export const GameState = {
 
   currentHour: 12, // Starts at 12 AM
   isVictory: false,
+
+  computerOn: false,
 };

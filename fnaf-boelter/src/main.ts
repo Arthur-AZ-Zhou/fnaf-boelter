@@ -1,7 +1,7 @@
 import './style.css';
 import * as THREE from 'three';
 import { scene, camera, renderer, ambientLight, ceilingLight, lightPanelMat } from './core/scene';
-import { leftSecurityDoor, rightSecurityDoor, doorMaterials, doorSprites, droplet, droplet2 } from './world/office';
+import { leftSecurityDoor, rightSecurityDoor, doorMaterials, doorSprites, droplet, droplet2, hour_hand, minute_hand } from './world/office';
 import './systems/controls';
 import { GameState } from './core/state';
 import { CONFIG } from './core/config';
@@ -60,6 +60,13 @@ let timeUntilFlickerOff = 1000;
 let timeUntilFlickerOn = 100;
 let isLightOn = true;
 
+let gameTimeHour = GameState.currentHour;
+let gameTimeMinutes = 0;
+
+let evilMode = false;
+// measure of how late it is from 0–1, can be used to ramp up difficulty or other stuff
+let lateness = (gameTimeHour % 12) / 5.0;
+let chance_of_evil = 0.0;
 /**
  * MAIN GAME LOOP, handles rendering and office camera movement
  */
@@ -134,10 +141,17 @@ function animate(): void {
 
   const delta_ms = delta * 1000;
 
+  debugEl.innerHTML = `
+    chance_of_evil: ${chance_of_evil}
+  `;
+
   // overhead lights flicker
   if (isLightOn){
     if (timeUntilFlickerOff > 0) {
       timeUntilFlickerOff -= delta_ms;
+      chance_of_evil += delta * (1 + lateness) / 48.0;
+
+      // slight flickering
       if ((now / 5 ) % 2 == 0)
         ceilingLight.intensity = 35;
       else
@@ -145,8 +159,10 @@ function animate(): void {
     }
     else {
       ceilingLight.intensity = 10;
+      ambientLight.intensity = 0;
       isLightOn = false;
-      timeUntilFlickerOn = Math.random() * 50 + 10;
+      evilMode = false;
+      timeUntilFlickerOn = Math.random() * (50 + (lateness * 100)) + 10;
     }
   }
   else {
@@ -159,17 +175,38 @@ function animate(): void {
       ceilingLight.color.setHex(0xEEE8D5);
       lightPanelMat.color.setHex(0xb0ab9b);
       isLightOn = true;
-      timeUntilFlickerOff = Math.random() * 5000 + 500;
+      timeUntilFlickerOff = Math.random() * (5000 - lateness * 3000) + 500;
 
-      // small chance that light turns red
-      if (Math.random() * 10 < 1) {
+      // small chance of evil mode B)
+      if (Math.random() * (10 + ((1 - chance_of_evil) * 10) + (lateness * 5)) - (lateness * 3) < 1) {
         ceilingLight.color.setHex(0xff0000);
         ceilingLight.intensity = 10;
-        timeUntilFlickerOff = Math.random() * 50 + 100;
+        timeUntilFlickerOff = Math.random() * (50 + (lateness * 2000)) + 100 + (lateness * 100);
         ambientLight.intensity = 0;
         lightPanelMat.color.setHex(0x000000);
+        evilMode = true;
+        chance_of_evil -= 1;
       }
     }
+  }
+
+  // update game clock
+  if (gameTimeHour != GameState.currentHour) {
+    gameTimeHour = GameState.currentHour;
+  }
+  gameTimeMinutes += delta * 60.0 / 48.0;
+
+  let minute_hand_delta_rotation = (gameTimeMinutes % 60) / 60.0 * 2.0 * Math.PI;
+  let hour_hand_delta_rotation = (gameTimeHour % 12) / 12.0 * Math.PI * 2 + minute_hand_delta_rotation / 12.0;
+
+  minute_hand.rotation.z = - minute_hand_delta_rotation;
+  hour_hand.rotation.z = - hour_hand_delta_rotation;
+
+  if (evilMode) {
+    let evil_minute_hand_rotation = -minute_hand_delta_rotation * 150;
+    minute_hand.rotation.z = - evil_minute_hand_rotation;
+    let evil_hour_hand_rotation = -minute_hand_delta_rotation * 30;
+    hour_hand.rotation.z = - evil_hour_hand_rotation;
   }
   renderer.render(scene, camera);
 }

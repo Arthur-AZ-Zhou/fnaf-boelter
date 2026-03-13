@@ -3,6 +3,7 @@ export const CONFIG = {
   CAMERA_SPEED: 0.05,
   SENSITIVITY: 15,
   FLICKER_INTENSITY: 0.3,
+  MS_PER_MIN: 48000,
   COLORS: {
     // Button Colors
     BUTTON_OFF: 0x333333,
