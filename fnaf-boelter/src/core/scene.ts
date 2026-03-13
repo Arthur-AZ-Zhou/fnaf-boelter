@@ -13,7 +13,7 @@ export const lightPanelMat = new THREE.MeshBasicMaterial({
   color: 0xb0ab9b,
   // side: THREE.BackSide, // faces downward since ceiling
 });
-const lightPanel = new THREE.Mesh(lightPanelGeo, lightPanelMat);
+export const lightPanel = new THREE.Mesh(lightPanelGeo, lightPanelMat);
 lightPanel.position.set(1, 4.9, 3); // just below ceiling
 lightPanel.rotation.x = Math.PI / 2; // face downward
 lightPanel.layers.set(0);

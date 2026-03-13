@@ -6,10 +6,13 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const loader = new GLTFLoader();
 
-export const solidObjects: THREE.Object3D[] = [];
+export const interactables: THREE.Object3D[] = []; // Array for raycasting interactable objects (shoot a ray from 2D mouse to 3D button)
 
 function loadModel(path: string, position: THREE.Vector3, scale: THREE.Vector3, 
-  rotationDegrees = new THREE.Vector3(0, 0, 0), isSolid = false) {
+  rotationDegrees = new THREE.Vector3(0, 0, 0), isSolid = false): Promise<THREE.Group> {
+  return new Promise((resolve) => {
+export const solidObjects: THREE.Object3D[] = [];
+
   loader.load(path, (gltf) => {
     const model = gltf.scene;
 
@@ -29,6 +32,10 @@ function loadModel(path: string, position: THREE.Vector3, scale: THREE.Vector3,
     );
 
     scene.add(model);
+      resolve(model);
+    });
+  });
+}
 
     if (isSolid) {
       solidObjects.push(model);
@@ -43,7 +50,7 @@ loadModel('/models/desk.glb',
   true
 );
 
-loadModel('/models/pc.glb',
+export const computer = await loadModel('/models/pc.glb',
   new THREE.Vector3(0, -1.1, -7),
   new THREE.Vector3(1.5, 1.5, 1.5),
   new THREE.Vector3(0, 0, 0),
@@ -93,7 +100,30 @@ loadModel('/models/chair.glb',
   new THREE.Vector3(2, 15, 2)
 );
 
-export const interactables: THREE.Object3D[] = []; // Array for raycasting interactable objects (shoot a ray from 2D mouse to 3D button)
+loadModel('/models/whiteboard.glb',
+  new THREE.Vector3(3, -1.55, 6.2),
+  new THREE.Vector3(1, 1, 1),
+  new THREE.Vector3(0, 8, 0)
+);
+
+loadModel('/models/clock.glb',
+  new THREE.Vector3(-4.6, 2.7, -8.8),
+  new THREE.Vector3(2, 2, 2),
+  new THREE.Vector3(0, 0, 0)
+);
+
+export const hour_hand = await loadModel('/models/hour_hand.glb',
+  new THREE.Vector3(-4.6, 2.7, -8.8),
+  new THREE.Vector3(2, 2, 2),
+  new THREE.Vector3(0, 0, 0)
+);
+
+export const minute_hand = await loadModel('/models/minute_hand.glb',
+  new THREE.Vector3(-4.6, 2.7, -8.8),
+  new THREE.Vector3(2, 2, 2),
+  new THREE.Vector3(0, 0, 0)
+);
+
 
 // Load textures for office doors and hallways for lights
 const textureLoader = new THREE.TextureLoader();
@@ -270,3 +300,11 @@ scene.add(droplet);
 export const static_droplet = new THREE.Mesh(dropletGeometry, dropletMaterial);
 static_droplet.position.set(-8, 4.2, -7.5); // start at ceiling
 scene.add(static_droplet);
+
+export const droplet2 = new THREE.Mesh(dropletGeometry, dropletMaterial);
+droplet2.position.set(-7, 4.25, -7.6); // start at ceiling
+scene.add(droplet2);
+
+export const static_droplet2 = new THREE.Mesh(dropletGeometry, dropletMaterial);
+static_droplet2.position.set(-7, 4.25, -7.6); // start at ceiling
+scene.add(static_droplet2);

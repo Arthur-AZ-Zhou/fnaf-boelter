@@ -1,5 +1,5 @@
 import { GameState } from '../core/state';
-
+import { CONFIG } from '../core/config';
 
 const timeContainer = document.createElement('div');
 let hourTimer: number;
@@ -19,7 +19,7 @@ document.body.appendChild(victoryScreen);
  */
 export function initTimeSystem(): void {
   updateTimeUI(); // 12AM start
-  hourTimer = window.setInterval(advanceTime, 48000); 
+  hourTimer = window.setInterval(advanceTime, CONFIG.MS_PER_MIN); 
 }
 
 /**
