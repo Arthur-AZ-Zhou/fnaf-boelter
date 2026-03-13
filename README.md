@@ -3,7 +3,7 @@
 Welcome to the repo dear TA! We are building a web-based survival horror experience using Three.js and Vite. The game currently features a functional 3D grey-box office, a fully operational 2D camera system mapped to Boelter Hall, and a complete RNG-based animatronic AI system.
 
 ## Quick Start
-To get the project running locally for the first time, install the dependencies and spin up the Vite dev server:
+To get the project running locally for the first time, cd into the inner `\fnaf-boelter\` folder and install the dependencies and spin up the Vite dev server:
 
 ~~~sh
 npm install
@@ -20,7 +20,7 @@ The core game loop is heavily resource-management focused. You must balance your
 The main stage is a 3D room (`src/world/office.ts`) equipped with two security doors on the left and right. Each doorway has a functional light switch and a close-door button. These doors are your only line of defense against Carey and Joe.
 
 ### Movement
-The player can use the arrow keys to change direction and the "w" key to move forwards
+The player can use the arrow keys to change direction and the `w` key to move forwards
 
 ### Animatronic AI
 Carey and Joe navigate Boelter Hall using a non-deterministic, RNG-based pathing system. Their movement frequency scales with the night's difficulty level. Once an animatronic reaches your doorway, you have exactly **5 seconds** to react and close the door before they trigger a jumpscare.
