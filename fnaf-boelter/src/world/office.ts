@@ -5,13 +5,13 @@ import { CONFIG } from '../core/config';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const loader = new GLTFLoader();
-
+export const solidObjects: THREE.Object3D[] = [];
 export const interactables: THREE.Object3D[] = []; // Array for raycasting interactable objects (shoot a ray from 2D mouse to 3D button)
 
 function loadModel(path: string, position: THREE.Vector3, scale: THREE.Vector3, 
   rotationDegrees = new THREE.Vector3(0, 0, 0), isSolid = false): Promise<THREE.Group> {
   return new Promise((resolve) => {
-export const solidObjects: THREE.Object3D[] = [];
+  
 
   loader.load(path, (gltf) => {
     const model = gltf.scene;
@@ -31,17 +31,16 @@ export const solidObjects: THREE.Object3D[] = [];
       THREE.MathUtils.degToRad(rotationDegrees.z)
     );
 
+    if (isSolid) {
+      solidObjects.push(model);
+    }
+
     scene.add(model);
       resolve(model);
     });
   });
 }
 
-    if (isSolid) {
-      solidObjects.push(model);
-    }
-  });
-}
 
 loadModel('/models/desk.glb',
   new THREE.Vector3(0, -5, -7),
@@ -103,7 +102,8 @@ loadModel('/models/chair.glb',
 loadModel('/models/whiteboard.glb',
   new THREE.Vector3(3, -1.55, 6.2),
   new THREE.Vector3(1, 1, 1),
-  new THREE.Vector3(0, 8, 0)
+  new THREE.Vector3(0, 8, 0),
+  true
 );
 
 loadModel('/models/clock.glb',
